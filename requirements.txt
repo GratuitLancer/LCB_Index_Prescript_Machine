@@ -1,5 +1,6 @@
-fastapi
+fastapi>=0.115,<1
 uvicorn
 requests
-pydantic
+pydantic>=2,<3
 sqlite-utils
+python-dotenv>=1.0,<2

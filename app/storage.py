@@ -1,13 +1,15 @@
 import sqlite3
-from pathlib import Path
+from contextlib import closing
 
-DB_PATH = Path("data/prescripts.db")
+from app.config import PROJECT_ROOT
+
+DB_PATH = PROJECT_ROOT / "data" / "prescripts.db"
+
 
 def init_db():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute("""
+    with closing(sqlite3.connect(DB_PATH)) as conn, conn:
+        conn.execute("""
         CREATE TABLE IF NOT EXISTS prescripts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             content TEXT NOT NULL,
@@ -15,31 +17,27 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             status TEXT DEFAULT 'new'
         )
-    """)
-    conn.commit()
-    conn.close()
+        """)
 
-def save_prescript(content: str, mode: str):
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO prescripts (content, mode) VALUES (?, ?)",
-        (content, mode)
-    )
-    conn.commit()
-    conn.close()
+
+def save_prescript(content: str, mode: str) -> int:
+    with closing(sqlite3.connect(DB_PATH)) as conn, conn:
+        cur = conn.execute(
+            "INSERT INTO prescripts (content, mode) VALUES (?, ?)",
+            (content, mode)
+        )
+        return cur.lastrowid
+
 
 def get_recent_prescripts(limit: int = 10) -> list[str]:
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute(
-        """
-        SELECT content FROM prescripts
-        WHERE content != '静候下一则指令'
-        ORDER BY id DESC LIMIT ?
-        """,
-        (limit,)
-    )
-    rows = cur.fetchall()
-    conn.close()
+    with closing(sqlite3.connect(DB_PATH)) as conn:
+        cur = conn.execute(
+            """
+            SELECT content FROM prescripts
+            WHERE content != '静候下一则指令'
+            ORDER BY id DESC LIMIT ?
+            """,
+            (limit,)
+        )
+        rows = cur.fetchall()
     return [row[0] for row in rows][::-1]

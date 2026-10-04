@@ -31,6 +31,8 @@ def looks_like_reasoning(text: str) -> bool:
 def normalize_output(text: str) -> str:
     text = text.strip()
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL | re.IGNORECASE)
+    text = re.sub(r"<think>.*$", "", text, flags=re.DOTALL | re.IGNORECASE).strip()
+    text = text.strip('"\'“”‘’` ')
 
     # 移除可能的提示前缀
     text = re.sub(r"^现在只输出一条新的指令：", "", text, flags=re.IGNORECASE)
@@ -52,6 +54,9 @@ def normalize_output(text: str) -> str:
             return part
 
     return ""
+
+def is_valid_output(text: str) -> bool:
+    return bool(text and re.search(r"[\u4e00-\u9fff]", text) and not looks_like_reasoning(text))
 
 def is_executable(text: str) -> bool:
     if len(text) < 6 or len(text) > 24:
