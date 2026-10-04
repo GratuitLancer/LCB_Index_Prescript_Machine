@@ -18,8 +18,8 @@
 ### 1. 获取项目
 
 ```bash
-git clone https://github.com/GratuitLancer/lcb_index_precript_machine.git
-cd lcb_index_precript_machine
+git clone https://github.com/GratuitLancer/LCB_Index_Prescript_Machine.git
+cd LCB_Index_Prescript_Machine
 ```
 
 ### 2. 安装依赖并创建配置
@@ -181,7 +181,7 @@ Python 测试模拟上游响应，并使用临时 SQLite 数据库，覆盖两�
 
 ## 反馈与贡献
 
-欢迎通过 [Issues](https://github.com/GratuitLancer/lcb_index_precript_machine/issues) 提交问题或功能建议，也欢迎提交 Pull Request。
+欢迎通过 [Issues](https://github.com/GratuitLancer/LCB_Index_Prescript_Machine/issues) 提交问题或功能建议，也欢迎提交 Pull Request。
 
 报告问题时，请附上运行环境、复现步骤及错误信息；不要附带真实 API 密钥。提交代码变更前，请运行相关测试。
 
